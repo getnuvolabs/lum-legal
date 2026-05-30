@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How to use Lum</title>
+<style>
+  :root{
+    --surface:#16130e; --surface2:#1f1b16; --surface3:#231f1a; --surface4:#2d2924;
+    --ink:#eae1d8; --ink-dim:#d1c5b3; --ink-soft:#9a8f7f;
+    --gold:#f2c879; --gold-bright:#ffe7c0; --rose:#ffb4a7; --blue:#6b86a6;
+    --lav:#9b89b8; --sage:#c7cb8f; --red:#ff8a80; --line:#4e4638;
+    --r:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:
+      radial-gradient(1200px 600px at 80% -10%, #241c30 0%, rgba(36,28,48,0) 55%),
+      radial-gradient(900px 500px at -10% 10%, #1c2230 0%, rgba(28,34,48,0) 50%),
+      var(--surface);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.62; font-size:clamp(15px,4.1vw,17px);
+    padding:0 0 64px;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 clamp(16px,5vw,28px)}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    text-align:center;padding:clamp(34px,9vw,60px) 0 clamp(20px,6vw,34px);
+    position:relative;
+  }
+  .hero .moon{width:clamp(96px,30vw,140px);height:clamp(96px,30vw,140px);margin:0 auto clamp(14px,4vw,22px)}
+  /* Real moon images get a soft gold bloom behind them, like the app's GlowingMoon. */
+  .moon-img{position:relative;display:grid;place-items:center;border-radius:50%}
+  .moon-img::before{
+    content:"";position:absolute;inset:-22%;border-radius:50%;
+    background:radial-gradient(circle,var(--gold) 0%,rgba(242,200,121,.12) 42%,transparent 72%);
+    opacity:.34;
+  }
+  .moon-img img{position:relative;width:100%;height:100%;border-radius:50%;object-fit:contain;display:block}
+  .hero h1{
+    font-size:clamp(28px,8.5vw,44px);line-height:1.1;font-weight:800;
+    letter-spacing:-.02em;
+    background:linear-gradient(180deg,var(--gold-bright),var(--gold));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .hero p{color:var(--ink-dim);margin-top:10px;font-size:clamp(15px,4.3vw,18px);font-style:italic}
+  .kicker{
+    display:inline-block;margin-bottom:14px;padding:6px 14px;border-radius:999px;
+    background:rgba(242,200,121,.12);color:var(--gold);font-weight:700;
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  }
+
+  /* ---------- SECTION SCAFFOLD ---------- */
+  section{margin-top:clamp(30px,8vw,52px)}
+  .sec-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .sec-num{
+    flex:0 0 auto;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;
+    font-weight:800;color:var(--surface);
+    background:linear-gradient(145deg,var(--gold-bright),var(--gold));
+    box-shadow:0 6px 18px rgba(242,200,121,.22);
+  }
+  .sec-head h2{font-size:clamp(20px,5.6vw,27px);line-height:1.15;font-weight:750;letter-spacing:-.01em}
+  .lead{color:var(--ink-dim);margin:0 0 18px}
+
+  /* ---------- CARD ---------- */
+  .card{
+    background:linear-gradient(180deg,var(--surface3),var(--surface2));
+    border:1px solid var(--line);border-radius:var(--r);
+    padding:clamp(16px,4.6vw,22px);margin:14px 0;
+  }
+  .card h3{font-size:clamp(16px,4.5vw,19px);margin-bottom:6px;color:var(--gold-bright)}
+  .card.tip{border-color:rgba(199,203,143,.4);background:linear-gradient(180deg,rgba(199,203,143,.08),var(--surface2))}
+  .card.warn{border-color:rgba(255,138,128,.4);background:linear-gradient(180deg,rgba(255,138,128,.07),var(--surface2))}
+  .card .label{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--sage);margin-bottom:6px}
+  .card.warn .label{color:var(--rose)}
+
+  /* ---------- FEATURE GRID ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .feat{
+    background:var(--surface3);border:1px solid var(--line);border-radius:14px;padding:16px;
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .feat .ic{width:40px;height:40px}
+  .feat b{font-size:15px;color:var(--ink)}
+  .feat span{font-size:13.5px;color:var(--ink-soft);line-height:1.5}
+
+  /* ---------- STEP FLOW ---------- */
+  .flow{display:flex;flex-direction:column;gap:0;margin:18px 0}
+  .step{display:flex;gap:14px;position:relative;padding-bottom:22px}
+  .step:last-child{padding-bottom:0}
+  .step:not(:last-child)::before{
+    content:"";position:absolute;left:18px;top:38px;bottom:-2px;width:2px;
+    background:linear-gradient(180deg,var(--gold),rgba(242,200,121,.15));
+  }
+  .step .dot{
+    flex:0 0 auto;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
+    background:var(--surface4);border:2px solid var(--gold);color:var(--gold);font-weight:800;z-index:1;
+  }
+  .step .body{padding-top:5px}
+  .step .body b{display:block;color:var(--ink);font-size:16px;margin-bottom:2px}
+  .step .body span{color:var(--ink-dim);font-size:14.5px}
+
+  /* ---------- TABLE ---------- */
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:16px 0;border-radius:14px;border:1px solid var(--line)}
+  table{border-collapse:collapse;width:100%;min-width:420px;font-size:14px}
+  th,td{padding:11px 13px;text-align:left;border-bottom:1px solid var(--line)}
+  thead th{background:var(--surface4);color:var(--gold);font-weight:700;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(even){background:rgba(255,255,255,.018)}
+  td .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700}
+
+  /* ---------- CALLOUT QUADRANT WHEEL ---------- */
+  .center{display:flex;justify-content:center;margin:18px 0}
+  figure{margin:18px 0;text-align:center}
+  figcaption{color:var(--ink-soft);font-size:13px;margin-top:8px;font-style:italic}
+
+  /* ---------- PHASE STRIP (real moon images) ---------- */
+  .phase-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}
+  .phase-strip figure{margin:0}
+  .phase-strip .moon-img.pm{width:100%;max-width:84px;aspect-ratio:1;margin:0 auto}
+  .phase-strip figcaption{font-size:12px;color:var(--ink-dim);margin-top:6px;font-style:normal;line-height:1.3}
+  .phase-strip figcaption small{color:var(--ink-soft);font-size:11px}
+
+  /* ---------- LEGEND ---------- */
+  .legend{display:flex;flex-wrap:wrap;gap:10px 18px;margin:14px 0}
+  .legend div{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-dim)}
+  .legend .sw{width:14px;height:14px;border-radius:4px;flex:0 0 auto}
+
+  /* ---------- TOC ---------- */
+  .toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px;margin:8px 0 4px}
+  .toc a{
+    display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink-dim);
+    background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-size:13.5px;font-weight:600;
+  }
+  .toc a b{color:var(--gold);font-weight:800}
+
+  ul.checks{list-style:none;margin:10px 0}
+  ul.checks li{position:relative;padding-left:28px;margin:8px 0;color:var(--ink-dim)}
+  ul.checks li::before{content:"";position:absolute;left:2px;top:7px;width:14px;height:14px;border-radius:4px;background:var(--gold);
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M20 6L9 17l-5-5' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/13px no-repeat;
+    mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M20 6L9 17l-5-5' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/13px no-repeat;
+    background-color:var(--surface4);}
+  ul.checks li b{color:var(--ink)}
+
+  .divider{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:clamp(28px,7vw,46px) 0}
+  .foot{text-align:center;color:var(--ink-soft);font-size:13px;padding-top:8px}
+  .foot .moon{width:40px;height:40px;margin:0 auto 10px;opacity:.8}
+  em.g{color:var(--gold);font-style:normal;font-weight:700}
+  a.anchor{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== HERO ===== -->
+  <header class="hero">
+    <div class="moon moon-img" aria-hidden="true">
+      <img src="moons/moon_full.png" alt="Lum moon">
+    </div>
+    <span class="kicker">Your guide</span>
+    <h1>Getting the most out of Lum</h1>
+    <p>A private, on-device journal for your cycle, moods &amp; symptoms — and the patterns that connect them.</p>
+  </header>
+
+  <!-- ===== TOC ===== -->
+  <nav class="toc">
+    <a href="#start"><b>1</b> First steps</a>
+    <a href="#log"><b>2</b> Logging daily</a>
+    <a href="#mood"><b>3</b> The mood moon</a>
+    <a href="#home"><b>4</b> Home &amp; calendar</a>
+    <a href="#patterns"><b>5</b> Patterns</a>
+    <a href="#predict"><b>6</b> Predictions</a>
+    <a href="#notif"><b>7</b> Reminders</a>
+    <a href="#weather"><b>8</b> Weather</a>
+    <a href="#reports"><b>+</b> Medical reports</a>
+    <a href="#look"><b>+</b> Make it yours</a>
+    <a href="#privacy"><b>9</b> Privacy &amp; safety</a>
+    <a href="#backup"><b>10</b> Backup</a>
+    <a href="#ai"><b>11</b> Analyse with AI</a>
+  </nav>
+
+  <!-- ===== 1 FIRST STEPS ===== -->
+  <section id="start">
+    <div class="sec-head"><div class="sec-num">1</div><h2>Start here — three quick steps</h2></div>
+    <p class="lead">Setup takes under a minute. The more days you log, the smarter Lum's patterns and predictions become.</p>
+    <div class="flow">
+      <div class="step"><div class="dot">1</div><div class="body"><b>Tell Lum your name &amp; last period</b><span>Onboarding asks for an optional name, the start date of your last period, and your typical cycle &amp; period length. Estimates are fine — Lum learns the real numbers as you log.</span></div></div>
+      <div class="step"><div class="dot">2</div><div class="body"><b>Pick what to enable</b><span>All optional, all off by default: an encrypted backup, and weather context. You can turn any of these on later in Settings.</span></div></div>
+      <div class="step"><div class="dot">3</div><div class="body"><b>Land on your Moon home</b><span>The moon shows today's place in your cycle. Tap it (or the “Today's mood” card) to make your first log.</span></div></div>
+    </div>
+    <div class="card tip"><div class="label">Tip</div>Logging just <em class="g">10 seconds a day</em> is enough. Consistency beats detail — even one tap (your flow or a mood) keeps your patterns accurate.</div>
+  </section>
+
+  <!-- ===== 2 LOGGING ===== -->
+  <section id="log">
+    <div class="sec-head"><div class="sec-num">2</div><h2>The three things you log</h2></div>
+    <p class="lead">Everything in Lum is built from three simple daily logs. Add as much or as little as you like.</p>
+    <div class="grid">
+      <div class="feat">
+        <svg class="ic" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="none" stroke="#ff8a80" stroke-width="2.5" opacity=".5"/><path d="M24 12c5 6 8 10 8 15a8 8 0 01-16 0c0-5 3-9 8-15z" fill="#ff8a80"/></svg>
+        <b>Cycle &amp; flow</b><span>Log period days as None / Light / Medium / Heavy. This is what powers predictions.</span>
+      </div>
+      <div class="feat">
+        <div class="ic moon-img" style="width:40px;height:40px"><img src="moons/moon_full.png" alt=""></div>
+        <b>Mood</b><span>Place yourself on the mood moon, then add specific feeling words if you want.</span>
+      </div>
+      <div class="feat">
+        <svg class="ic" viewBox="0 0 48 48"><g stroke="#c7cb8f" stroke-width="2.5" stroke-linecap="round"><path d="M14 18h20M14 24h20M14 30h12"/></g></svg>
+        <b>Symptoms</b><span>Pick from a curated set (cramps, headache, fatigue…) and set an intensity from 1–5.</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>How a daily log flows</h3>
+      <div class="center">
+        <svg viewBox="0 0 340 96" width="100%" style="max-width:340px" aria-label="open, choose, save flow">
+          <defs><marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0l6 3-6 3z" fill="#9a8f7f"/></marker></defs>
+          <g font-size="11" fill="#eae1d8" text-anchor="middle">
+            <rect x="6" y="32" width="86" height="34" rx="9" fill="#2d2924" stroke="#4e4638"/><text x="49" y="53">Tap the moon</text>
+            <line x1="94" y1="49" x2="120" y2="49" stroke="#9a8f7f" stroke-width="2" marker-end="url(#ar)"/>
+            <rect x="124" y="32" width="92" height="34" rx="9" fill="#2d2924" stroke="#4e4638"/><text x="170" y="53">Choose value</text>
+            <line x1="218" y1="49" x2="244" y2="49" stroke="#9a8f7f" stroke-width="2" marker-end="url(#ar)"/>
+            <rect x="248" y="32" width="86" height="34" rx="9" fill="#3a3320" stroke="#f2c879"/><text x="291" y="53" fill="#f2c879">Save ✓</text>
+          </g>
+        </svg>
+      </div>
+      <p style="color:var(--ink-dim);font-size:14px">Each save writes only to your phone. You'll feel a gentle haptic tick when you pick, and a firmer one when you save.</p>
+    </div>
+  </section>
+
+  <!-- ===== 3 MOOD MOON ===== -->
+  <section id="mood">
+    <div class="sec-head"><div class="sec-num">3</div><h2>The mood moon, explained</h2></div>
+    <p class="lead">Lum maps mood on two axes at once — how <em class="g">pleasant</em> you feel (left→right) and how <em class="g">energised</em> you are (top→bottom). Touch the moon to place yourself; drag to fine-tune.</p>
+    <figure>
+      <svg viewBox="0 0 260 260" width="100%" style="max-width:300px" aria-label="mood moon quadrants">
+        <defs>
+          <radialGradient id="q1" cx="78%" cy="22%" r="60%"><stop offset="0" stop-color="#f2c879" stop-opacity=".6"/><stop offset="1" stop-color="#f2c879" stop-opacity="0"/></radialGradient>
+          <radialGradient id="q2" cx="78%" cy="78%" r="60%"><stop offset="0" stop-color="#ffb4a7" stop-opacity=".55"/><stop offset="1" stop-color="#ffb4a7" stop-opacity="0"/></radialGradient>
+          <radialGradient id="q3" cx="22%" cy="78%" r="60%"><stop offset="0" stop-color="#6b86a6" stop-opacity=".55"/><stop offset="1" stop-color="#6b86a6" stop-opacity="0"/></radialGradient>
+          <radialGradient id="q4" cx="22%" cy="22%" r="60%"><stop offset="0" stop-color="#9b89b8" stop-opacity=".55"/><stop offset="1" stop-color="#9b89b8" stop-opacity="0"/></radialGradient>
+        </defs>
+        <clipPath id="moonClip"><circle cx="130" cy="130" r="74"/></clipPath>
+        <circle cx="130" cy="130" r="120" fill="#1b1812"/>
+        <circle cx="130" cy="130" r="120" fill="url(#q1)"/><circle cx="130" cy="130" r="120" fill="url(#q2)"/>
+        <circle cx="130" cy="130" r="120" fill="url(#q3)"/><circle cx="130" cy="130" r="120" fill="url(#q4)"/>
+        <image href="moons/moon_full.png" x="56" y="56" width="148" height="148" clip-path="url(#moonClip)" preserveAspectRatio="xMidYMid slice"/>
+        <line x1="130" y1="14" x2="130" y2="246" stroke="#4e4638" stroke-width="1" opacity=".5"/>
+        <line x1="14" y1="130" x2="246" y2="130" stroke="#4e4638" stroke-width="1" opacity=".5"/>
+        <g font-size="13" font-weight="700" text-anchor="middle">
+          <text x="58" y="40" fill="#9b89b8">Tense</text><text x="202" y="40" fill="#f2c879">Joyful</text>
+          <text x="56" y="232" fill="#6b86a6">Low</text><text x="200" y="232" fill="#ffb4a7">Calm</text>
+        </g>
+        <g font-size="10" fill="#9a8f7f" text-anchor="middle">
+          <text x="58" y="54">Anxious · Angry</text><text x="202" y="54">Energised · Excited</text>
+          <text x="56" y="246">Sad · Tired</text><text x="200" y="246">Content · Peaceful</text>
+        </g>
+        <circle cx="188" cy="74" r="9" fill="#fff" /><circle cx="188" cy="74" r="5" fill="#f2c879"/>
+      </svg>
+      <figcaption>The four quadrants. The glowing dot is your current selection — here, “Energised · Pleasant”.</figcaption>
+    </figure>
+    <div class="card tip"><div class="label">Get more from it</div>After choosing a quadrant, tap <em class="g">“Add specific words”</em> to pick precise feelings (e.g. <em class="g">grateful, restless, foggy</em>). These words make your Patterns far richer over time.</div>
+  </section>
+
+  <!-- ===== 4 HOME & CALENDAR ===== -->
+  <section id="home">
+    <div class="sec-head"><div class="sec-num">4</div><h2>Your moon home &amp; the almanac</h2></div>
+    <p class="lead">The home moon isn't decoration — its phase tracks where you are in your cycle, and you can travel through time by swiping.</p>
+    <div class="grid">
+      <div class="feat"><div class="ic moon-img" style="width:40px;height:40px"><img src="moons/moon_waxing.png" alt=""></div><b>Swipe the sky</b><span>Swipe left/right on the moon to move day-by-day through the lunar &amp; cycle calendar. Today stays one tap away.</span></div>
+      <div class="feat"><svg class="ic" viewBox="0 0 48 48"><g fill="#f2c879"><circle cx="14" cy="16" r="2"/><circle cx="24" cy="12" r="2.4"/><circle cx="34" cy="18" r="2"/><circle cx="30" cy="30" r="2"/></g></svg><b>Star constellation</b><span>Each star is a recently-logged day. Tap a star to open that day's details.</span></div>
+      <div class="feat"><svg class="ic" viewBox="0 0 48 48"><rect x="10" y="12" width="28" height="26" rx="4" fill="none" stroke="#c7cb8f" stroke-width="2.5"/><line x1="10" y1="20" x2="38" y2="20" stroke="#c7cb8f" stroke-width="2.5"/></svg><b>Almanac month view</b><span>The calendar overlays period tints, your fertile-window ring, ovulation &amp; mood dots on each day.</span></div>
+    </div>
+    <h3 style="color:var(--gold-bright);margin:18px 0 10px;font-size:18px">Reading the moon ↔ cycle</h3>
+    <div class="phase-strip">
+      <figure><div class="moon-img pm"><img src="moons/moon_new.png" alt="new moon"></div><figcaption>Period<br><small>new</small></figcaption></figure>
+      <figure><div class="moon-img pm"><img src="moons/moon_waxing.png" alt="waxing moon"></div><figcaption>Follicular<br><small>waxing</small></figcaption></figure>
+      <figure><div class="moon-img pm"><img src="moons/moon_mid.png" alt="full moon"></div><figcaption>Ovulation<br><small>full</small></figcaption></figure>
+      <figure><div class="moon-img pm"><img src="moons/moon_waning.png" alt="waning moon"></div><figcaption>Luteal<br><small>waning</small></figcaption></figure>
+    </div>
+    <div class="legend">
+      <div><span class="sw" style="background:#3a3a3a"></span>New moon → your period</div>
+      <div><span class="sw" style="background:#d9cdbb"></span>Full moon → around ovulation</div>
+      <div><span class="sw" style="background:#ffb4a7"></span>Period tint on the calendar</div>
+      <div><span class="sw" style="background:#f2c879"></span>Gold ring → ovulation / today</div>
+    </div>
+  </section>
+
+  <!-- ===== 5 PATTERNS ===== -->
+  <section id="patterns">
+    <div class="sec-head"><div class="sec-num">5</div><h2>Patterns — your body's quiet signals</h2></div>
+    <p class="lead">Once you've logged enough, the <em class="g">Patterns</em> tab surfaces gentle, computed observations — entirely on your device, with no AI sending anything anywhere.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Pattern type</th><th>What it watches</th><th>Needs</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill" style="background:rgba(242,200,121,.2);color:#f2c879">Mood</span></td><td>Mood lifts in your follicular phase; PMS dips in late luteal</td><td>~2 cycles</td></tr>
+          <tr><td><span class="pill" style="background:rgba(107,134,166,.25);color:#9bb4d4">Sleep</span></td><td>Sleep dips in the days before your period</td><td>Health Connect</td></tr>
+          <tr><td><span class="pill" style="background:rgba(199,203,143,.2);color:#c7cb8f">Symptoms</span></td><td>Headaches clustering around ovulation</td><td>A few logs</td></tr>
+          <tr><td><span class="pill" style="background:rgba(255,180,167,.2);color:#ffb4a7">Energy</span></td><td>Steps higher in follicular vs menstrual</td><td>Health Connect</td></tr>
+          <tr><td><span class="pill" style="background:rgba(155,137,184,.25);color:#b9a9d6">Weather</span></td><td>Symptoms vs low pressure; mood vs warmth</td><td>Weather on</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card"><h3>Tap any insight for the full story</h3><p style="color:var(--ink-dim);font-size:14.5px">Each card opens to a bigger chart, a plain-English “what this means”, and a gentle “what you might try”. Lum never diagnoses — it just shows you what your own data says.</p></div>
+  </section>
+
+  <!-- ===== 6 PREDICTIONS ===== -->
+  <section id="predict">
+    <div class="sec-head"><div class="sec-num">6</div><h2>How predictions work</h2></div>
+    <p class="lead">Lum uses a transparent <em class="g">calendar method</em> — no black boxes. It learns your real average cycle length from the gaps between the period start-dates you log.</p>
+    <figure>
+      <svg viewBox="0 0 360 120" width="100%" style="max-width:360px" aria-label="cycle timeline">
+        <rect x="10" y="50" width="340" height="22" rx="11" fill="#231f1a" stroke="#4e4638"/>
+        <rect x="10" y="50" width="62" height="22" rx="11" fill="#ff8a80" opacity=".7"/>
+        <rect x="150" y="50" width="60" height="22" fill="#9b89b8" opacity=".45"/>
+        <circle cx="180" cy="61" r="7" fill="#f2c879"/>
+        <rect x="300" y="50" width="50" height="22" rx="11" fill="#ff8a80" opacity=".5"/>
+        <g font-size="10.5" fill="#d1c5b3" text-anchor="middle">
+          <text x="41" y="40">Period</text>
+          <text x="180" y="40" fill="#f2c879">Ovulation</text>
+          <text x="180" y="92">Fertile window</text>
+          <text x="325" y="40">Next period</text>
+        </g>
+        <g font-size="9" fill="#9a8f7f" text-anchor="middle"><text x="41" y="86">days 1–5</text><text x="325" y="86">predicted</text></g>
+      </svg>
+      <figcaption>Ovulation is estimated ~14 days before your next predicted period; the fertile window spans the days around it.</figcaption>
+    </figure>
+    <div class="card warn"><div class="label">Please remember</div>Predictions and the fertile window are <em class="g">estimates from your logs</em>, not medical advice and <em class="g">not contraception</em>. Cycles vary. For health decisions, talk to a clinician.</div>
+  </section>
+
+  <!-- ===== 7 NOTIFICATIONS ===== -->
+  <section id="notif">
+    <div class="sec-head"><div class="sec-num">7</div><h2>Reminders that log for you</h2></div>
+    <p class="lead">Turn on reminders in <em class="g">Settings → Notifications</em>. They're fully on-device, and you can customise every word.</p>
+    <ul class="checks">
+      <li><b>Log without opening the app</b> — put Light / Medium / Heavy (or mood) buttons right on the notification and tap to save.</li>
+      <li><b>Customise the text</b> — edit the title &amp; message for each reminder, with a live preview as you type.</li>
+      <li><b>Discreet mode</b> — hide cycle wording &amp; lock-screen content for total privacy in public.</li>
+      <li><b>Period-soon heads-up</b> — an optional nudge 1–2 days before your predicted period.</li>
+    </ul>
+    <div class="card tip"><div class="label">Try this</div>Set your daily reminder for a calm moment — bedtime works well. Then add the three flow buttons so logging your period is a single tap from the lock screen.</div>
+  </section>
+
+  <!-- ===== 8 WEATHER ===== -->
+  <section id="weather">
+    <div class="sec-head"><div class="sec-num">8</div><h2>Optional weather context</h2></div>
+    <p class="lead">Weather — <b>temperature, barometric pressure, humidity and wind</b> — can line up with how your body feels. Turn it on to let Patterns spot those links, and to see each day's weather in its detail view.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>What</th><th>How it works</th></tr></thead>
+        <tbody>
+          <tr><td>Off by default</td><td>Opt in from onboarding or Settings → Weather. If you'd previously blocked location, Lum points you to the system settings to re-enable it.</td></tr>
+          <tr><td>Coarse location</td><td>Only an approximate location is used — never precise, never background.</td></tr>
+          <tr><td>One online lookup</td><td>The only feature that uses the internet. Only a rough location is sent to the free Open-Meteo service — never your cycle data.</td></tr>
+          <tr><td>Context only</td><td>It adds Pattern insights; it never changes your period predictions.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== 8b ATTACHMENTS ===== -->
+  <section id="reports">
+    <div class="sec-head"><div class="sec-num">+</div><h2>Attach medical reports</h2></div>
+    <p class="lead">Open any day (tap a date on the Almanac or the moon on Home) and attach a lab result, scan, doctor's note, or any PDF, image, text, or Word file.</p>
+    <ul class="checks">
+      <li><b>Your copy is kept safe</b> — the file is saved inside Lum, so it stays even if you delete the original from your phone.</li>
+      <li><b>Open or remove</b> any report from that day's detail view.</li>
+      <li><b>Shared with your AI analysis</b> — text reports are folded into the export, and PDFs/images/docs are sent along as files, so the AI can read them next to your data.</li>
+    </ul>
+  </section>
+
+  <!-- ===== 8c APPEARANCE ===== -->
+  <section id="look">
+    <div class="sec-head"><div class="sec-num">+</div><h2>Make it yours</h2></div>
+    <div class="grid">
+      <div class="feat"><svg class="ic" viewBox="0 0 48 48"><circle cx="24" cy="24" r="14" fill="none" stroke="#f2c879" stroke-width="2.5"/><path d="M24 10v28" stroke="#f2c879" stroke-width="2.5"/></svg><b>Light / Dark / System</b><span>Settings → Appearance. Pick a fixed look or follow your phone's theme.</span></div>
+      <div class="feat"><svg class="ic" viewBox="0 0 48 48"><circle cx="24" cy="24" r="13" fill="none" stroke="#c7cb8f" stroke-width="2.5"/><circle cx="24" cy="24" r="5" fill="#c7cb8f"/></svg><b>Match my wallpaper</b><span>On Android 12+, Lum can take its colours from your wallpaper (Material You).</span></div>
+      <div class="feat"><svg class="ic" viewBox="0 0 48 48"><path d="M14 30c0-6 4-10 10-10s10 4 10 10" fill="none" stroke="#9b89b8" stroke-width="2.5"/><circle cx="24" cy="16" r="4" fill="#9b89b8"/></svg><b>Health Connect</b><span>Optionally read sleep &amp; steps (read-only) to enrich your Patterns.</span></div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== 9 PRIVACY ===== -->
+  <section id="privacy">
+    <div class="sec-head"><div class="sec-num">9</div><h2>Your privacy, by design</h2></div>
+    <p class="lead">Lum has no accounts, no servers, no ads, and no analytics. Your journal lives only on your phone.</p>
+    <div class="grid">
+      <div class="feat"><svg class="ic" viewBox="0 0 48 48"><rect x="12" y="21" width="24" height="17" rx="3" fill="none" stroke="#f2c879" stroke-width="2.5"/><path d="M17 21v-4a7 7 0 0114 0v4" fill="none" stroke="#f2c879" stroke-width="2.5"/></svg><b>App lock</b><span>Require fingerprint / face every time Lum opens. Settings → Privacy.</span></div>
+      <div class="feat"><svg class="ic" viewBox="0 0 48 48"><path d="M24 8l14 6v9c0 9-6 14-14 17-8-3-14-8-14-17v-9z" fill="none" stroke="#c7cb8f" stroke-width="2.5"/></svg><b>Quick exit</b><span>Shake (or a tap gesture) instantly hides Lum to the background.</span></div>
+      <div class="feat"><svg class="ic" viewBox="0 0 48 48"><circle cx="24" cy="24" r="15" fill="none" stroke="#ffb4a7" stroke-width="2.5"/><line x1="14" y1="14" x2="34" y2="34" stroke="#ffb4a7" stroke-width="2.5"/></svg><b>No tracking</b><span>Nothing leaves your device except optional weather &amp; backups you choose.</span></div>
+    </div>
+  </section>
+
+  <!-- ===== 10 BACKUP ===== -->
+  <section id="backup">
+    <div class="sec-head"><div class="sec-num">10</div><h2>Keep your data safe — and yours</h2></div>
+    <p class="lead">Because everything is on your phone, <em class="g">you</em> control backups and exports.</p>
+    <div class="flow">
+      <div class="step"><div class="dot">A</div><div class="body"><b>Encrypted backup file</b><span>Settings → Backup. Save an encrypted file to any folder (including your own cloud drive). It's locked with a passphrase only you know — even if someone finds it, it's unreadable.</span></div></div>
+      <div class="step"><div class="dot">B</div><div class="body"><b>Back up to your Google Drive</b><span>Settings → Google Drive. Sign in to <em class="g">your own</em> Drive and Lum keeps an encrypted backup in a “Lum” folder you can open right from Settings. Lum can only touch the files it creates — never your other Drive files. Tick “Include medical reports” to bring your attachments along too.</span></div></div>
+      <div class="step"><div class="dot">C</div><div class="body"><b>Automatic backup</b><span>Schedule a daily or weekly encrypted backup — to your folder and/or your Drive — quietly in the background. Settings shows the last backup time for each.</span></div></div>
+      <div class="step"><div class="dot">D</div><div class="body"><b>Export PDF / CSV</b><span>Generate a shareable PDF (great for a doctor's visit) or a CSV of your raw data, any time.</span></div></div>
+    </div>
+    <div class="card warn"><div class="label">Don't lose your passphrase</div>Your backup passphrase can't be recovered — Lum never sees it. Store it somewhere safe, like a password manager.</div>
+  </section>
+
+  <!-- ===== 11 ANALYSE WITH AI ===== -->
+  <section id="ai">
+    <div class="sec-head"><div class="sec-num">11</div><h2>Analyse your data with any AI ✨</h2></div>
+    <p class="lead">This is the magic one. Export a special file, hand it to <em class="g">any</em> AI — ChatGPT, Claude, Gemini — and it instantly reviews your history like a personal analyst. <strong>You don't type a single prompt.</strong></p>
+
+    <div class="card tip">
+      <div class="label">No prompt needed</div>
+      The file already contains the instructions. The moment you send it, the AI acts as a
+      senior cycle-health analyst, finds your patterns, and shows you <em class="g">at least 10
+      insights</em> automatically. You only type something if you want to dig deeper.
+    </div>
+
+    <h3 style="color:var(--gold-bright);margin:18px 0 10px;font-size:18px">How it works</h3>
+    <div class="flow">
+      <div class="step"><div class="dot">1</div><div class="body"><b>Open the export</b><span>Settings → “Export &amp; analyse with AI”, then choose <b>AI analysis ✨</b>.</span></div></div>
+      <div class="step"><div class="dot">2</div><div class="body"><b>Pick a date range</b><span>This cycle, last 3, all of it — or a custom from/to range.</span></div></div>
+      <div class="step"><div class="dot">3</div><div class="body"><b>Share to your AI app</b><span>Send the file in ChatGPT / Claude / Gemini. That's it.</span></div></div>
+      <div class="step"><div class="dot">4</div><div class="body"><b>Read your analysis</b><span>Patterns across cycle length, mood, symptoms, sleep, weather — with the numbers. Ask follow-ups to go deeper.</span></div></div>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 340 92" width="100%" style="max-width:340px" aria-label="export to AI flow">
+        <defs><marker id="ar2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0l6 3-6 3z" fill="#9a8f7f"/></marker></defs>
+        <g font-size="11" fill="#eae1d8" text-anchor="middle">
+          <rect x="4" y="30" width="78" height="34" rx="9" fill="#2d2924" stroke="#4e4638"/><text x="43" y="51">Your data</text>
+          <line x1="84" y1="47" x2="110" y2="47" stroke="#9a8f7f" stroke-width="2" marker-end="url(#ar2)"/>
+          <rect x="114" y="30" width="96" height="34" rx="9" fill="#3a3320" stroke="#f2c879"/><text x="162" y="51" fill="#f2c879">AI file ✨</text>
+          <line x1="212" y1="47" x2="238" y2="47" stroke="#9a8f7f" stroke-width="2" marker-end="url(#ar2)"/>
+          <rect x="242" y="30" width="94" height="34" rx="9" fill="#2d2924" stroke="#4e4638"/><text x="289" y="46">Any AI →</text><text x="289" y="58" fill="#c7cb8f">10+ patterns</text>
+        </g>
+      </svg>
+      <figcaption>Export → share → instant analysis. No prompt to write.</figcaption>
+    </figure>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>File type</th><th>When to use</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill" style="background:rgba(242,200,121,.2);color:#f2c879">Text (.txt)</span> ✓ recommended</td><td>Every AI reads it perfectly, so the built-in instructions are always followed. The safest choice.</td></tr>
+          <tr><td><span class="pill" style="background:rgba(199,203,143,.2);color:#c7cb8f">PDF</span></td><td>Fine for most AIs, but some can jumble table order when extracting text. Use text if unsure.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="color:var(--gold-bright);margin:18px 0 10px;font-size:18px">What the AI gives back</h3>
+    <ul class="checks">
+      <li><b>10+ specific patterns</b>, each backed by your real numbers — across cycle length &amp; regularity, flow, mood, symptoms, sleep, energy and weather.</li>
+      <li><b>30 relationships explored</b> — the export asks the AI to work through a curated checklist (e.g. sleep vs cramps, pressure vs headaches, steps vs cravings).</li>
+      <li><b>Charts, if your AI can draw them</b> — otherwise the same analysis in clear text and tables (it never refuses for lack of graphics).</li>
+      <li><b>A “do you need a doctor?” read</b> — a calm, data-based view on whether something's worth raising with a clinician (it never diagnoses).</li>
+      <li><b>It offers you deeper questions</b> — e.g. “Want me to dig into your periods vs headaches?” — so you can keep exploring by just picking one.</li>
+      <li><b>Your attached reports too</b> — any medical reports on those days are included so the AI reads them alongside your data.</li>
+    </ul>
+    <div class="card tip"><div class="label">If your AI asks for a message</div>Some apps (like ChatGPT) want a line of text with an attachment. The export screen has a ready-made message with a <b>Copy</b> button — paste it in if needed. Otherwise the file alone is enough.</div>
+
+    <div class="card warn"><div class="label">A gentle reminder</div>An AI gives general informational analysis, not medical advice. The exported file tells it to stay within those limits — but for health decisions, talk to a clinician.</div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ===== CHECKLIST ===== -->
+  <section>
+    <div class="sec-head"><div class="sec-num">★</div><h2>Your first-week checklist</h2></div>
+    <ul class="checks">
+      <li>Log <b>something every day</b> — even one tap keeps patterns accurate.</li>
+      <li>Add <b>specific mood words</b> a few times so insights get richer.</li>
+      <li>Turn on a <b>daily reminder</b> at a time that suits you.</li>
+      <li>Set up an <b>encrypted backup</b> (a file or your Google Drive) and save the passphrase.</li>
+      <li>After ~2 cycles, check <b>Patterns</b> for your first insights.</li>
+      <li>Try the <b>Analyse with AI</b> export — hand your data to any AI for a deeper look.</li>
+    </ul>
+  </section>
+
+  <!-- ===== WE'RE LISTENING ===== -->
+  <section>
+    <div class="sec-head"><div class="sec-num">♡</div><h2>We'd love to hear from you</h2></div>
+    <p class="lead">Found a bug, or have an idea to make Lum better? We're a small team and we read
+    <em class="g">every single message</em> — your suggestions genuinely shape what we build next.</p>
+    <div class="card"><b>In the app:</b> Settings → <b>Report a problem</b> or <b>Suggest a feature</b>.
+    Or email us directly at <a href="mailto:getnuvolabs@gmail.com">getnuvolabs@gmail.com</a>.</div>
+  </section>
+
+  <div class="foot">
+    <div class="moon moon-img" aria-hidden="true"><img src="moons/moon_full.png" alt=""></div>
+    <p>Lum — a private space for your body, mood &amp; cycle.</p>
+    <p style="margin-top:4px;opacity:.7">Made with care. Your data never leaves your phone unless you choose.</p>
+  </div>
+
+</div>
+</body>
+</html>
