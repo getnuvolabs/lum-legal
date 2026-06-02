@@ -1,0 +1,9 @@
+{
+  "latestVersionCode": 4,
+  "latestVersionName": "1.1.0",
+  "minSupportedVersionCode": 1,
+  "features": [
+    "Pinned daily reminders — a stray 'Clear all' won't wipe them",
+    "A heads-up inside the app when a new version is ready"
+  ]
+}
