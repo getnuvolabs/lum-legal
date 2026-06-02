@@ -1,9 +1,10 @@
 {
-  "latestVersionCode": 4,
-  "latestVersionName": "1.1.0",
+  "latestVersionCode": 5,
+  "latestVersionName": "1.1.1",
   "minSupportedVersionCode": 1,
   "features": [
-    "Pinned daily reminders — a stray 'Clear all' won't wipe them",
-    "A heads-up inside the app when a new version is ready"
+    "Smarter reminders — each one has its own buttons and on/off switch",
+    "The daily check-in logs your mood, and is skipped on days you've already logged",
+    "Delete a single day's data, plus a 'Check for updates' button in Settings"
   ]
 }
